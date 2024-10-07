@@ -41,10 +41,13 @@ namespace UncoverGamesExporter.Services
     {
         private HttpClient googleDriveClient;
 
-        // TODO pull these from somewhere
+        private string clientId;
+        private string clientSecret;
 
-        public void ConfigureClient(Configuration config)
+        public void ConfigureClient(Configuration config, AppSettings appSettings)
         {
+            this.clientId = appSettings.clientId;
+            this.clientSecret = appSettings.clientSecret;
             string token = config.GetToken();
             googleDriveClient = new HttpClient();
             googleDriveClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -147,7 +150,7 @@ namespace UncoverGamesExporter.Services
             callback();
         }
 
-        public async void RefreshToken(Callback callback)
+        public async void RefreshToken(Callback callback = null)
         {
             Configuration config = Configuration.GetInstance();
 
@@ -168,7 +171,10 @@ namespace UncoverGamesExporter.Services
                 config.SetToken(response.access_token);
                 config.SetExpiresIn(response.expires_in);
 
-                callback();
+                if (callback != null)
+                {
+                    callback();
+                }
             }
             catch (HttpRequestException ex)
             {

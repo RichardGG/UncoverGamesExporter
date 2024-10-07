@@ -1,4 +1,5 @@
-﻿using Playnite.SDK;
+﻿using Microsoft.Extensions.Configuration;
+using Playnite.SDK;
 using Playnite.SDK.Events;
 using Playnite.SDK.Plugins;
 using System;
@@ -8,9 +9,16 @@ using UncoverGamesExporter.Services;
 
 namespace UncoverGamesExporter
 {
+    class AppSettings
+    {
+        public string clientId;
+        public string clientSecret;
+    }
+
     public class UncoverGamesExporter : GenericPlugin
     {
         private UncoverGamesExporterSettingsViewModel settings { get; set; }
+        private AppSettings appSettings;
 
         private IPlayniteAPI playniteApi;
         private Exporter exporter;
@@ -29,7 +37,14 @@ namespace UncoverGamesExporter
             Configuration config = Configuration.GetInstance();
             config.SetPluginDataPath(GetPluginUserDataPath());
 
-            this.exporter = new Exporter(this.playniteApi);
+            IConfigurationRoot appConfig = new ConfigurationBuilder()
+                .AddEnvironmentVariables("UNCOVERGAMES_")
+                .Build();
+
+            this.appSettings = new AppSettings();
+            this.appSettings.clientId = appConfig["clientId"];
+            this.appSettings.clientSecret= appConfig["clientSecret"];
+            this.exporter = new Exporter(this.playniteApi, this.appSettings);
         }
 
         public override void OnApplicationStarted(OnApplicationStartedEventArgs args)

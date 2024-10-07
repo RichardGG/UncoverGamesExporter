@@ -10,11 +10,13 @@ namespace UncoverGamesExporter.Services
 {
     internal class Exporter
     {
+        private AppSettings appSettings;
         private IPlayniteAPI playniteApi;
 
-        public Exporter(IPlayniteAPI playniteApi)
+        public Exporter(IPlayniteAPI playniteApi, AppSettings appSettings)
         {
             this.playniteApi = playniteApi;
+            this.appSettings = appSettings;
         }
 
         public async void Export()
@@ -23,7 +25,7 @@ namespace UncoverGamesExporter.Services
             GoogleDrive drive = new GoogleDrive();
 
             // TODO we probably don't need to do this anymore
-            drive.ConfigureClient(config);
+            drive.ConfigureClient(config, this.appSettings);
 
             if (!config.IsConfigured())
             {
@@ -35,7 +37,7 @@ namespace UncoverGamesExporter.Services
                 ));
                 return;
             }
-            if (config.HasExpired())
+            if (config.HasExpired() || !config.HasToken())
             {
                 drive.RefreshToken(this.Export);
                 return;

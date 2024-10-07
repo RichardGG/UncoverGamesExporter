@@ -71,7 +71,13 @@ namespace UncoverGamesExporter.Services
         public bool IsConfigured()
         {
             Config config = LoadConfig();
-            return config.expiry != null;
+            return config.expiry != null && config.refresh_token != null;
+        }
+
+        public bool HasToken()
+        {
+            Config config = LoadConfig();
+            return config.token != null;
         }
 
         private string Encode(string value)
