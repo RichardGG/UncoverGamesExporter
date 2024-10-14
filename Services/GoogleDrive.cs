@@ -48,6 +48,12 @@ namespace UncoverGamesExporter.Services
         {
             this.clientId = appSettings.clientId;
             this.clientSecret = appSettings.clientSecret;
+            this.SetClientToken();
+        }
+
+        public void SetClientToken()
+        {
+            Configuration config = Configuration.GetInstance();
             string token = config.GetToken();
             googleDriveClient = new HttpClient();
             googleDriveClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -150,7 +156,7 @@ namespace UncoverGamesExporter.Services
             callback();
         }
 
-        public async void RefreshToken(Callback callback = null)
+        public async Task<bool> RefreshToken()
         {
             Configuration config = Configuration.GetInstance();
 
@@ -170,15 +176,19 @@ namespace UncoverGamesExporter.Services
                 var response = JsonConvert.DeserializeObject<TokenResponse>(res.Content.ReadAsStringAsync().Result);
                 config.SetToken(response.access_token);
                 config.SetExpiresIn(response.expires_in);
+                this.SetClientToken();
 
-                if (callback != null)
-                {
-                    callback();
-                }
+                return true;
             }
             catch (HttpRequestException ex)
             {
+                return false;
             }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            return false;
         }
 
         public async ValueTask<ListItem[]> ListFiles()
@@ -211,6 +221,11 @@ namespace UncoverGamesExporter.Services
         {
             string url = "https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name%20%3D%20%27" + name + "%27";
             var res = await googleDriveClient.GetAsync(url);
+            if (res.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                await this.RefreshToken();
+                res = await googleDriveClient.GetAsync(url);
+            }
 
             var list = JsonConvert.DeserializeObject<ListResponse>(res.Content.ReadAsStringAsync().Result);
             return list.files.Length == 0

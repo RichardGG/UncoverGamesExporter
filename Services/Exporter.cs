@@ -39,8 +39,7 @@ namespace UncoverGamesExporter.Services
             }
             if (config.HasExpired() || !config.HasToken())
             {
-                drive.RefreshToken(this.Export);
-                return;
+                await drive.RefreshToken();
             }
 
             IItemCollection<Game> games = Playnite.SDK.API.Instance.Database.Games;
