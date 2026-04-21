@@ -204,6 +204,32 @@ namespace UncoverGamesExporter.Services
                 }
                 var res = await googleDriveClient.GetAsync(url);
                 var list = JsonConvert.DeserializeObject<ListResponse>(res.Content.ReadAsStringAsync().Result);
+
+
+                // How do we get to this scenario? Map out the calls...
+                // TODO in some scenario list.files.Length is throwing a null exception, lets debug if it is null
+                if (list == null || list.files == null)
+                {
+                    throw new Exception("Unexpected response from GDrive: " + res.Content.ReadAsStringAsync().Result);
+                    /**
+                        {
+                          "error": {
+                            "code": 401,
+                            "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
+                            "errors": [
+                              {
+                                "message": "Invalid Credentials",
+                                "domain": "global",
+                                "reason": "authError",
+                                "location": "Authorization",
+                                "locationType": "header"
+                              }
+                            ],
+                            "status": "UNAUTHENTICATED"
+                          }
+                        }
+                    */
+                }
                 
                 // Merge new files with files array
                 ListItem[] tempFiles = new ListItem[files.Length + list.files.Length];
