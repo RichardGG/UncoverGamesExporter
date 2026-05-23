@@ -37,13 +37,11 @@ namespace UncoverGamesExporter
             Configuration config = Configuration.GetInstance();
             config.SetPluginDataPath(GetPluginUserDataPath());
 
-            IConfigurationRoot appConfig = new ConfigurationBuilder()
-                .AddEnvironmentVariables("UNCOVERGAMES_")
-                .Build();
-
-            this.appSettings = new AppSettings();
-            this.appSettings.clientId = appConfig["clientId"];
-            this.appSettings.clientSecret= appConfig["clientSecret"];
+            this.appSettings = new AppSettings
+            {
+                clientId = EnvironmentDetails.ClientId,
+                clientSecret = EnvironmentDetails.ClientSecret,
+            };
             this.exporter = new Exporter(this.playniteApi, this.appSettings);
         }
 
