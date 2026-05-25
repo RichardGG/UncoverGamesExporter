@@ -12,6 +12,20 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
 
+      - name: Create EnvironmentDetails.cs
+        run: |
+          $content = @"
+            namespace UncoverGamesExporter
+            {
+                internal static class EnvironmentDetails
+                {
+                    public const string ClientId = "${{ secrets.CLIENT_ID }}";
+                    public const string ClientSecret = "${{ secrets.CLIENT_SECRET }}";
+                }
+            }
+          "@
+          Set-Content -Path "${{ github.workspace }}\EnvironmentDetails.cs" -Value $content -Encoding UTF8
+
       - name: Setup Nuget.exe
         uses: NuGet/setup-nuget@v1
 
@@ -20,20 +34,20 @@ jobs:
 
       - name: Build (DotNET4.6.2)
         run: |
-           cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\"
-           .\MSBuild.exe "${{ github.workspace }}\UncoverGamesExporter.sln" -p:Configuration=Release -restore
+          cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\"
+          .\MSBuild.exe "${{ github.workspace }}\UncoverGamesExporter.sln" -p:Configuration=Release -restore
 
       - name: Setup Playnite
         run: |
-           Invoke-WebRequest -Uri "https://github.com/JosefNemec/Playnite/releases/download/10.36/Playnite1036.zip" -OutFile "${{ github.workspace }}\Playnite.zip"
-           Expand-Archive "${{ github.workspace }}\Playnite.zip" -DestinationPath "${{ github.workspace }}\Playnite"
+          Invoke-WebRequest -Uri "https://github.com/JosefNemec/Playnite/releases/download/10.36/Playnite1036.zip" -OutFile "${{ github.workspace }}\Playnite.zip"
+          Expand-Archive "${{ github.workspace }}\Playnite.zip" -DestinationPath "${{ github.workspace }}\Playnite"
 
       - name: Pack with Playnite
         run: |
-           cd "${{ github.workspace }}\Playnite"
-           .\Toolbox.exe pack "${{ github.workspace }}\Source\bin\Release\" "${{ github.workspace }}\Toolbox\"
-           cd "${{ github.workspace }}\Toolbox"
-           Get-ChildItem -Filter *.pext | Rename-Item -NewName "UncoverGamesExporter_${{ github.ref_name }}.pext"
+          cd "${{ github.workspace }}\Playnite"
+          .\Toolbox.exe pack "${{ github.workspace }}\Source\bin\Release\" "${{ github.workspace }}\Toolbox\"
+          cd "${{ github.workspace }}\Toolbox"
+          Get-ChildItem -Filter *.pext | Rename-Item -NewName "UncoverGamesExporter_${{ github.ref_name }}.pext"
 
       - name: Release
         uses: softprops/action-gh-release@v2
