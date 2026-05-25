@@ -30,7 +30,7 @@ jobs:
         uses: NuGet/setup-nuget@v1
 
       - name: Nuget Restore 
-        run: nuget restore .\OculusLibrary.sln
+        run: nuget restore .\UncoverGamesExporter.sln
 
       - name: Build (DotNET4.6.2)
         run: |
