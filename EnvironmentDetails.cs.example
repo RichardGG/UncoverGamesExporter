@@ -1,0 +1,8 @@
+namespace UncoverGamesExporter
+{
+    internal static class EnvironmentDetails
+    {
+        public const string ClientId = "your-client-id";
+        public const string ClientSecret = "your-client-secret";
+    }
+}
