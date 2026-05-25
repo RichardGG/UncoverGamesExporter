@@ -112,6 +112,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EnvironmentDetails.cs" />
     <Compile Include="Services\Configuration.cs" />
     <Compile Include="Services\Exporter.cs" />
     <Compile Include="Services\GoogleDrive.cs" />
