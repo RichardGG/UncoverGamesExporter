@@ -48,7 +48,7 @@ jobs:
           ls "${{ github.workspace }}"
           ls "${{ github.workspace }}\Playnite"
           ls
-          .\Toolbox.exe pack "${{ github.workspace }}\Source\bin\Release\" "${{ github.workspace }}\Toolbox\"
+          .\Toolbox.exe pack "${{ github.workspace }}\bin\Release\" "${{ github.workspace }}\Toolbox\"
           cd "${{ github.workspace }}\Toolbox"
           Get-ChildItem -Filter *.pext | Rename-Item -NewName "UncoverGamesExporter_${{ github.ref_name }}.pext"
 
