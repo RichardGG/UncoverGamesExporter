@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Playnite.SDK;
+﻿using Playnite.SDK;
 using Playnite.SDK.Events;
 using Playnite.SDK.Plugins;
 using System;
