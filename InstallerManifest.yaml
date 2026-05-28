@@ -1,6 +1,6 @@
 AddonId: 'UncoverGamesExporter_d0ec6248-2b1f-421a-9ed4-722e5623f61f'
 Packages:
-  - Version: 1.0
+  - Version: 1.0.0
     RequiredApiVersion: 6.11.0
     ReleaseDate: 2026-05-28
     PackageUrl: https://github.com/RichardGG/UncoverGamesExporter/releases/download/v1.0.0/UncoverGamesExporter_v1.0.0.pext
