@@ -60,7 +60,19 @@ namespace UncoverGamesExporter.Services
             UploadData(drive, "Sources.json", Playnite.SDK.API.Instance.Database.Sources);
             UploadData(drive, "Tags.json", Playnite.SDK.API.Instance.Database.Tags);
 
-            ListItem[] files = await drive.ListFiles();
+            ListItem[] files;
+
+            try
+            {
+                files = await drive.ListFiles();
+            }
+            catch (Exception ex)
+            {
+                // TODO check exception type and only refresh if applicable
+                await drive.RefreshToken();
+                files = await drive.ListFiles();
+            }
+            
 
             int gamesCount = games.Count;
             int progress = 0;
