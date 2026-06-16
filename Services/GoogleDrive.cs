@@ -191,7 +191,7 @@ namespace UncoverGamesExporter.Services
             return false;
         }
 
-        public async ValueTask<ListItem[]> ListFiles()
+        public async Task<ListItem[]> ListFiles()
         {
             string pageToken = "first";
             ListItem[] files = new ListItem[0];
@@ -243,7 +243,7 @@ namespace UncoverGamesExporter.Services
             return files;
         }
 
-        public async ValueTask<String> GetFileId(string name)
+        public async Task<string> GetFileId(string name)
         {
             string url = "https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name%20%3D%20%27" + name + "%27";
             var res = await googleDriveClient.GetAsync(url);
