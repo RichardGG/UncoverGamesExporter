@@ -34,9 +34,12 @@ jobs:
       - name: Nuget Restore 
         run: nuget restore .\UncoverGamesExporter.sln
 
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v3
+
       - name: Build (DotNET4.6.2)
         run: |
-          MSBuild.exe "${{ github.workspace }}\UncoverGamesExporter.sln" -p:Configuration=Release -restore
+          msbuild "${{ github.workspace }}\UncoverGamesExporter.sln" -property:Configuration=Release -restore
 
       - name: Setup Playnite
         run: |
