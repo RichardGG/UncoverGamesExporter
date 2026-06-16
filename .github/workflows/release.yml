@@ -36,7 +36,7 @@ jobs:
 
       - name: Build (DotNET4.6.2)
         run: |
-          cd MSBuild.exe "${{ github.workspace }}\UncoverGamesExporter.sln" -p:Configuration=Release -restore
+          MSBuild.exe "${{ github.workspace }}\UncoverGamesExporter.sln" -p:Configuration=Release -restore
 
       - name: Setup Playnite
         run: |
